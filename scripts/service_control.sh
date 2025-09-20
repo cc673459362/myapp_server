@@ -30,7 +30,7 @@ stop_service() {
 
     PID=$(cat "$PID_FILE")
     echo "停止 $APP_NAME (PID: $PID)..."
-    kill -SIGTERM "$PID"
+    kill -9 "$PID"
     rm "$PID_FILE"
     echo "服务已停止"
 }

@@ -15,3 +15,10 @@ type User struct {
 	CreatedAt          time.Time `gorm:"autoCreateTime"`
 	UpdatedAt          time.Time `gorm:"autoUpdateTime"`
 }
+
+type Room struct {
+	ID      uint   `gorm:"primaryKey;autoIncrement"`             // 内部自增ID（可选）
+	UUID    []byte `gorm:"type:binary(16);uniqueIndex;not null"` // 二进制UUID + 唯一索引
+	Name    string `gorm:"size:100;not null"`
+	OwnerID uint   `gorm:"not null"`
+}

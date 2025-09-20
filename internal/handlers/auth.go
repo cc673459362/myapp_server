@@ -116,6 +116,7 @@ func LoginHandler(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
+			"id":      user.ID,
 			"token":   token,
 			"expires": time.Now().Add(utils.JWTExpiration).Format(time.RFC3339),
 		})

@@ -32,7 +32,7 @@ func main() {
 	}
 
 	// 自动迁移表结构（生产环境应使用迁移工具）
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Room{})
 
 	// 初始化Gin
 	router := gin.Default()
