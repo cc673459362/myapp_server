@@ -28,7 +28,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	voiceRoomGroup.Use(utils.JWTMiddleware()) // JWT保护路由
 	{
 		voiceRoomGroup.POST("/createroom", CreateRoomHandler(db))
-		//profileGroup.POST("/joinroom", JoinRoomHandler(db))
+		voiceRoomGroup.POST("/joinroom", JoinRoomHandler(db))
 		//profileGroup.POST("/quitroom", QuitRoomHandler(db))
 	}
 }
