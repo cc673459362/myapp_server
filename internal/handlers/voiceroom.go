@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/cc673459362/myapp_server/internal/models"
+	"github.com/cc673459362/myapp_server/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -11,12 +12,10 @@ import (
 
 type CreateRoomRequest struct {
 	Roomname string `json:"room_name" binding:"required"`
-	UserID   uint   `json:"user_id" binding:"required"`
 }
 
 type JoinRoomRequest struct {
 	RoomID string `json:"room_id" binding:"required"`
-	UserID uint   `json:"user_id" binding:"required"`
 }
 
 type RoomResponse struct {
@@ -35,13 +34,20 @@ func CreateRoomHandler(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		// 1. 验证用户身份
+		userId := utils.GetUserID(c)
+		if userId == 0 {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "用户未认证"})
+			return
+		}
+
 		// 2. 创建房间号UUID
 		roomID, _ := uuid.New().MarshalBinary()
 
 		// 3. 创建房间（模拟数据库操作）
 		room := models.Room{
 			Name:    req.Roomname,
-			OwnerID: req.UserID,
+			OwnerID: userId,
 			UUID:    roomID,
 		}
 		if err := db.Create(&room).Error; err != nil {
@@ -58,7 +64,7 @@ func CreateRoomHandler(db *gorm.DB) gin.HandlerFunc {
 			"data": RoomResponse{
 				RoomID:   uuid.Must(uuid.FromBytes(room.UUID)).String(),
 				RoomName: room.Name,
-				Creator:  req.UserID,
+				Creator:  userId,
 			},
 		})
 	}
@@ -71,6 +77,14 @@ func JoinRoomHandler(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+		// 1. 验证用户身份
+		userId := utils.GetUserID(c)
+		if userId == 0 {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "用户未认证"})
+			return
+		}
+
 		// 2. 查找房间
 		roomUUID, err := uuid.Parse(req.RoomID)
 		if err != nil {
@@ -87,8 +101,8 @@ func JoinRoomHandler(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Room not found"})
 			return
 		}
-		// 3. 模拟用户加入房间逻辑（如更新数据库等）
-		// 这里什么都不用干，因为房间转发逻辑在nginx中处理
+		// 3. 这里可以添加用户加入房间的逻辑，比如更新数据库等，也可以直接在nginx做
+
 		// 4. 返回响应
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,

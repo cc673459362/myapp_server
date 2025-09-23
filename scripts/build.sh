@@ -5,7 +5,7 @@ APP_DIR="/home/jiafengchen/go-projects/src/myapp_server"
 cd $APP_DIR/cmd || { echo "Error: 目录 cmd 不存在"; exit 1; }
 
 # 执行构建（默认生成与目录同名的可执行文件）
-go build
+go build -o myapp_server
 
 # 检查构建结果
 if [ $? -eq 0 ]; then
