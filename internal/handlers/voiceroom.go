@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"net/http"
 	"strconv"
-	"sync/atomic"
 
 	"github.com/cc673459362/myapp_server/internal/models"
 	"github.com/cc673459362/myapp_server/internal/utils"
@@ -28,15 +27,9 @@ type RoomResponse struct {
 	ServerPort string `json:"server_port,omitempty"`
 }
 
-var roomIDCounter uint32 = 0 // 初始值
-
-func GenerateRoomID() uint32 {
-	return atomic.AddUint32(&roomIDCounter, 1) // 线程安全递增
-}
-
 func Uint32ToBinary16(value uint32) []byte {
 	buf := make([]byte, 16)
-	binary.BigEndian.PutUint32(buf[12:], value) // 高地址存有效数据，低地址补零
+	binary.BigEndian.PutUint32(buf[12:], value)
 	return buf
 }
 
@@ -54,17 +47,14 @@ func CreateRoomHandler(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		// 1. 验证用户身份
 		userId := utils.GetUserID(c)
 		if userId == 0 {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "用户未认证"})
 			return
 		}
 
-		// 2. 创建房间号UUID
 		roomUUID := utils.GenerateID()
 
-		// 3. 创建房间（模拟数据库操作）
 		room := models.Room{
 			Name:    req.Roomname,
 			OwnerID: userId,
@@ -78,9 +68,8 @@ func CreateRoomHandler(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		// 4. 返回响应
 		c.JSON(http.StatusCreated, gin.H{
-			"room_id":   strconv.FormatUint(uint64(roomUUID), 10), // 转为字符串
+			"room_id":   strconv.FormatUint(uint64(roomUUID), 10),
 			"room_name": room.Name,
 			"creator":   userId,
 		})

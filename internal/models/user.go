@@ -5,8 +5,8 @@ import (
 )
 
 type User struct {
-	ID                 uint   `gorm:"primaryKey"`
-	UIN                uint64 `gorm:"uniqueIndex;not null;comment:全局唯一标识号"` // 新增UIN字段
+	ID                 uint   `gorm:"primaryKey;autoIncrement"`
+	Uin                uint64 `gorm:"uniqueIndex;not null;comment:全局唯一标识号"`
 	Username           string `gorm:"uniqueIndex;size:50;not null"`
 	Email              string `gorm:"uniqueIndex;size:255;not null"`
 	PasswordHash       string `gorm:"type:char(97);not null"`

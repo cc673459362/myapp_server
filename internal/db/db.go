@@ -22,7 +22,7 @@ func LoadConfig() (*DBConfig, error) {
 	config := &DBConfig{
 		Host:     getEnv("DB_HOST", "localhost"),
 		Port:     getEnv("DB_PORT", "3306"),
-		User:     getEnv("DB_USER", ""), // 默认空强制配置
+		User:     getEnv("DB_USER", ""),
 		Password: getEnv("DB_PASSWORD", ""),
 		Name:     getEnv("DB_NAME", "myapp"),
 	}
