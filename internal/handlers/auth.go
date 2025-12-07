@@ -39,6 +39,7 @@ func RegisterHandler(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		user := models.User{
+			UIN:          utils.GenerateID(),
 			Username:     req.Username,
 			Email:        req.Email,
 			PasswordHash: hash,
@@ -116,7 +117,7 @@ func LoginHandler(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"id":      user.ID,
+			"id":      user.UIN,
 			"token":   token,
 			"expires": time.Now().Add(utils.JWTExpiration).Format(time.RFC3339),
 		})

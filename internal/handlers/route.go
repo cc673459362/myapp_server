@@ -38,7 +38,7 @@ func GetProfileHandler(db *gorm.DB) gin.HandlerFunc {
 		userID := c.Param("id")
 
 		var user models.User
-		result := db.Where("id = ?", userID).First(&user)
+		result := db.Where("ui_n = ?", userID).First(&user)
 		if result.Error != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "无效凭证"})
 			return
