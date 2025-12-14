@@ -25,10 +25,11 @@ type RegisterRequest struct {
 // @Accept json
 // @Produce json
 // @Param registerRequest body RegisterRequest true "注册信息"
-// @Success 200 {object} map[string]interface{} "注册成功"
-// @Failure 400 {object} map[string]interface{} "请求参数错误"
+// @Success 201 {object} map[string]interface{} "注册成功"
+// @Failure 400 {object} map[string]interface{} "参数错误"
+// @Failure 409 {object} map[string]interface{} "用户名或邮箱已存在"
 // @Failure 500 {object} map[string]interface{} "服务器内部错误"
-// @Router /api/auth/register [post]
+// @Router /auth/register [post]
 func RegisterHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req RegisterRequest

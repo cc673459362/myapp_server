@@ -40,7 +40,7 @@ func main() {
 	router := gin.Default()
 	// 设置Swagger
 	// 设置Swagger - 修正配置
-	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.BasePath = "/myapp_server/api"
 	docs.SwaggerInfo.Host = "jiafengchen.cn" // 替换为你的域名
 
 	// 配置Swagger中间件
