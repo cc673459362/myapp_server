@@ -3,3 +3,4 @@ PIDFILE
 /logs*
 /bin*
 /run*
+/docs*

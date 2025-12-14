@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 
+	docs "github.com/cc673459362/myapp_server/docs"
 	"github.com/cc673459362/myapp_server/internal/db"
 	"github.com/cc673459362/myapp_server/internal/handlers"
 	"github.com/cc673459362/myapp_server/internal/models"
-
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -36,6 +38,19 @@ func main() {
 
 	// 初始化Gin
 	router := gin.Default()
+	// 设置Swagger
+	// 设置Swagger - 修正配置
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Host = "jiafengchen.cn" // 替换为你的域名
+
+	// 配置Swagger中间件
+	ginSwagger.WrapHandler(
+		swaggerfiles.Handler,
+		ginSwagger.URL("/swagger/doc.json"), // 指定doc.json路径
+		ginSwagger.DefaultModelsExpandDepth(-1),
+	)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	// 注册路由
 	handlers.SetupRoutes(router, db)

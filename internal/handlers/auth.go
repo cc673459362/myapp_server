@@ -12,15 +12,23 @@ import (
 	"gorm.io/gorm"
 )
 
-/**
- * @description register request payload
- */
 type RegisterRequest struct {
 	Username string `json:"username" binding:"required,alphanum,min=3,max=50"`
 	Email    string `json:"email"    binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8,max=128"`
 }
 
+// Register godoc
+// @Summary 用户注册
+// @Description 创建新用户账号
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param registerRequest body RegisterRequest true "注册信息"
+// @Success 200 {object} map[string]interface{} "注册成功"
+// @Failure 400 {object} map[string]interface{} "请求参数错误"
+// @Failure 500 {object} map[string]interface{} "服务器内部错误"
+// @Router /api/auth/register [post]
 func RegisterHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req RegisterRequest
