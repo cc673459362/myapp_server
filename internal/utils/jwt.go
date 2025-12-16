@@ -28,13 +28,18 @@ func JWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if len(tokenString) < 8 { // "Bearer " 长度校验
-			c.AbortWithStatusJSON(401, gin.H{"error": "未授权的访问"})
+			c.AbortWithStatusJSON(401, gin.H{"error": "unauthorized token"})
 			return
 		}
 
 		token, err := jwt.Parse(tokenString[7:], func(token *jwt.Token) (interface{}, error) {
 			return []byte(SecretKey), nil
 		})
+
+		if err != nil {
+			c.AbortWithStatusJSON(401, gin.H{"error": "invalid token", "details": err.Error()})
+			return
+		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			// 注意这里jwt Parse之后的sub是float64类型

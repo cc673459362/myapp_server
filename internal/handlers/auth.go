@@ -76,6 +76,19 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// Register godoc
+// @Summary 用户登录
+// @Description 登录已有账户
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param LoginRequest body LoginRequest true "登录信息"
+// @Success 200 {object} map[string]interface{} "登录成功"
+// @Failure 400 {object} map[string]interface{} "参数错误"
+// @Failure 401 {object} map[string]interface{} "不存在该用户或验证失败"
+// @Failure 429 {object} map[string]interface{} "该用户在冻结期内"
+// @Failure 500 {object} map[string]interface{} "服务器内部错误"
+// @Router /auth/login [post]
 func LoginHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req LoginRequest
@@ -139,16 +152,23 @@ func LoginHandler(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
+// Register godoc
+// @Summary 获取信息
+// @Description 获取当前用户信息
+// @Tags profile
+// @Produce json
+// @Success 200 {object} map[string]interface{} "查询成功"
+// @Failure 401 {object} map[string]interface{} "未授权"
+// @Failure 404 {object} map[string]interface{} "不存在该用户"
+// @Failure 500 {object} map[string]interface{} "服务器内部错误"
+// @Router /profile [get]
+// @Security BearerAuth
 func GetProfileHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userID := c.Param("id")
+		userID := utils.GetUserID(c)
 
 		var user models.User
-		result := db.Where("uin = ?", userID).First(&user)
-		if result.Error != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user ID"})
-			return
-		}
+		result := db.Where("id = ?", userID).First(&user)
 
 		// 错误处理
 		if result.Error != nil {

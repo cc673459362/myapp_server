@@ -15,6 +15,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// @title MyApp API
+// @version 1.0.0
+// @description MyApp 服务器 API
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description JWT认证，格式: Bearer <token>
+
+// @host jiafengchen.cn
+// @BasePath /myapp_server/api
 func main() {
 	// 配置 MySQL 连接（根据实际情况调整）
 	dbConfig, err := db.LoadConfig()
@@ -39,9 +50,7 @@ func main() {
 	// 初始化Gin
 	router := gin.Default()
 	// 设置Swagger
-	// 设置Swagger - 修正配置
 	docs.SwaggerInfo.BasePath = "/myapp_server/api"
-	docs.SwaggerInfo.Host = "jiafengchen.cn" // 替换为你的域名
 
 	// 配置Swagger中间件
 	ginSwagger.WrapHandler(

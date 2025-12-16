@@ -20,7 +20,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	profileGroup := apiGroup.Group("/profile")
 	profileGroup.Use(utils.JWTMiddleware())
 	{
-		profileGroup.GET("/:id", GetProfileHandler(db))
+		profileGroup.GET("/", GetProfileHandler(db))
 	}
 
 	voiceRoomGroup := apiGroup.Group("/voiceroom")
